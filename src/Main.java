@@ -12,8 +12,16 @@ public class Main {
         //System.exit(0);   // остановить выполнение на этой строке
 
         // C: /Users/USERNAME/...
-        String folderPath = "/home/oksana/Загрузки/";
-        long sizeLimit = 50 * 1024 * 1024;
+        ParametersBag bag = new ParametersBag(args); // для запуска из командной строки jar
+        // файла или через Edit Configurations
+
+        // где Запуск и debug слева Main -> Edit Configurations -> в строке Programm Arguments
+        // проставить размер и путь (сейчас стоит
+        // -l 50Mb -d /home/oksana/Загрузки ) Это для использования класса ParametersBag
+        // и в командной строке с исп jar файла
+        String folderPath = bag.getPath();  // либо просто пишем путь
+        long sizeLimit = bag.getLimit(); // либо пишем просто лимит цифрами
+
         File file = new File (folderPath);
         Node root = new Node(file, sizeLimit); // добавляет в корень нашу папку
         // эта нода будет содержать все папки все дерево всех папок
