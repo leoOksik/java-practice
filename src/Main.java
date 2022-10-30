@@ -12,9 +12,10 @@ public class Main {
         //System.exit(0);   // остановить выполнение на этой строке
 
         // C: /Users/USERNAME/...
-        String folderPath = "/home/oksana/Загрузки/s";
+        String folderPath = "/home/oksana/Загрузки/";
+        long sizeLimit = 50 * 1024 * 1024;
         File file = new File (folderPath);
-        Node root = new Node(file); // добавляет в корень нашу папку
+        Node root = new Node(file, sizeLimit); // добавляет в корень нашу папку
         // эта нода будет содержать все папки все дерево всех папок
 
         long start = System.currentTimeMillis();
@@ -25,7 +26,7 @@ public class Main {
         System.out.println("Forkjoin " + size);
         System.out.println("Node " + root.getSize());  // у этой ноды мы можем запрашивать напрямую размер
         // печать всей ноды
-        System.out.println("All node " + root);
+        System.out.println(root);
 
         long duration = System.currentTimeMillis() - start;
         System.out.println("Time " +  duration + " ms"); // такой вариант лучше использовать
