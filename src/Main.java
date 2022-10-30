@@ -1,35 +1,39 @@
 import java.io.File;
-import java.util.HashMap;
 import java.util.concurrent.ForkJoinPool;
 
 public class Main {
 
-    private static char [] sizeMultipliers = {'B', 'K', 'M', 'G', 'T'};
+
     public static void main(String[] args) {
 
-        System.out.println(getHumanReadableSize(240640));
-        System.exit(0); // остановить выполнение на этой строке
-        System.out.println(getSizeFromHumanReadable("235K"));
-        System.exit(0);   // остановить выполнение на этой строке
+        //System.out.println(getHumanReadableSize(240640));
+        // System.exit(0); // остановить выполнение на этой строке
+       // System.out.println(getSizeFromHumanReadable("235K"));
+        //System.exit(0);   // остановить выполнение на этой строке
 
         // C: /Users/USERNAME/...
         String folderPath = "/home/oksana/Загрузки/s";
         File file = new File (folderPath);
+        Node root = new Node(file); // добавляет в корень нашу папку
+        // эта нода будет содержать все папки все дерево всех папок
 
         long start = System.currentTimeMillis();
 
-        FolderSizeCalculator calculator = new FolderSizeCalculator(file);
+        FolderSizeCalculator calculator = new FolderSizeCalculator(root); // запускаем код по этой папке
         ForkJoinPool pool = new ForkJoinPool();
         long size = pool.invoke(calculator);
-        System.out.println(size);
+        System.out.println("Forkjoin " + size);
+        System.out.println("Node " + root.getSize());  // у этой ноды мы можем запрашивать напрямую размер
+        // печать всей ноды
+        System.out.println("All node " + root);
 
         long duration = System.currentTimeMillis() - start;
-        System.out.println(duration + " ms"); // такой вариант лучше использовать
+        System.out.println("Time " +  duration + " ms"); // такой вариант лучше использовать
 
         // forkjoinpool управляет количеством потоков кот одновременно работают
         // они запускаются не все сразу
 
-        System.out.println(getFolderSize(file));
+        System.out.println("Folder get " + getFolderSize(file));
         // выведет размер блока данных в кот хранится список ссылок на все папки и файлы лежащие
         // в данной папке
 
@@ -55,36 +59,5 @@ public class Main {
             sum += getFolderSize(file);
         }
         return sum;
-    }
-    public static String getHumanReadableSize (long size) {
-        for (int i = 0; i < sizeMultipliers.length; i++) {
-           double value = size / Math.pow(1024, i);
-           if (value < 1024) {
-               return Math.round(value) + "" + sizeMultipliers[i] + (i > 0 ? "b" : "");
-           }
-        }
-        return "Very big!";
-    }
-    public  static long getSizeFromHumanReadable (String size) {
-
-        HashMap <Character, Integer> char2multiplier = getMultipliers();
-        char sizeFactor = size
-                .replaceAll("[0-9\\s+]+", "")
-                .charAt(0);
-        int multiplier = char2multiplier.get(sizeFactor);
-        long length = multiplier * Long.valueOf(
-                size.replaceAll("[^0-9]", ""));
-        return length;
-    }
-    private static HashMap <Character, Integer> getMultipliers () {
-
-        HashMap <Character, Integer> char2multiplier = new HashMap<>();
-        for (int i = 0; i < sizeMultipliers.length; i++) {
-            char2multiplier.put
-                    (sizeMultipliers[i],
-                            (int) Math.pow(1024, i));
-        }
-        return char2multiplier;
-
     }
 }
